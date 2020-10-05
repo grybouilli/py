@@ -87,7 +87,8 @@ static PyObject *bundle_richcompare(PyObject *a,PyObject *b,int cmp)
 static long bundle_hash(PyObject *self)
 {
     FLEXT_ASSERT(pyBundle_Check(self));
-    return (long)pyBundle_AS_BUNDLE(self);
+    //return (long)pyBundle_AS_BUNDLE(self);
+    return PyObject_HashNotImplemented(self);
 }
 
 

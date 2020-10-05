@@ -83,7 +83,8 @@ static PyObject *symbol_richcompare(PyObject *a,PyObject *b,int cmp)
 static long symbol_hash(PyObject *self)
 {
     FLEXT_ASSERT(pySymbol_Check(self));
-    return (long)pySymbol_AS_SYMBOL(self);
+    //return (long)pySymbol_AS_SYMBOL(self);
+    return PyObject_HashNotImplemented(self);
 }
 
 

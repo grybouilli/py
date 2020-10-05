@@ -131,7 +131,8 @@ static PyObject *buffer_repr(PyObject *self)
 static long buffer_hash(PyObject *self)
 {
     FLEXT_ASSERT(pySamplebuffer_Check(self));
-    return (long)(((pySamplebuffer *)self)->buf);
+    //return (long)(((pySamplebuffer *)self)->buf);
+    return PyObject_HashNotImplemented(self);
 }
 
 static PyObject *buffer_getsymbol(pySamplebuffer* self,void *closure)

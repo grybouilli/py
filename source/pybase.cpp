@@ -357,10 +357,10 @@ void pybase::OpenEditor()
 
     // this should open the editor....
 #if FLEXT_OS == FLEXT_OS_WIN
-    int err = (int)ShellExecute(NULL,"edit",fname,NULL,NULL,SW_SHOW);
+    int err = static_cast<int>(reinterpret_cast<uintptr_t>(ShellExecute(NULL,"edit",fname,NULL,NULL,SW_SHOW)));
     if(err == SE_ERR_NOASSOC) {
         // no association found - try notepad
-        err = (int)ShellExecute(NULL,NULL,"notepad.exe",fname,NULL,SW_SHOW);
+        err = static_cast<int>(reinterpret_cast<uintptr_t>(ShellExecute(NULL,NULL,"notepad.exe",fname,NULL,SW_SHOW)));
     }
     else if(err == ERROR_FILE_NOT_FOUND || err == SE_ERR_FNF)
         post("py/pyext - File not %s found",fname);

@@ -1,8 +1,8 @@
 # which major python version?
-PYTHONVER=24
+PYTHONVER=27
 
 # where is the Python installation?
-PYTHONPATH=%programfiles%/python$(PYTHONVER)
+PYTHONPATH="C:/Python$(PYTHONVER)"
 
 # uncomment if numpy/numarray/numeric support should be compiled in
 # for info see http://numeric.scipy.org
