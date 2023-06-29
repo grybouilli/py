@@ -65,7 +65,7 @@ Pure data - any platform supporting gcc-compatible compilers
 
  --> Build with cmake for Python3 support <--
 
-A lot of variables can be set to redirect paths for puredata, flext and python, according to your environment. It is suggested to have a look at the CMakeLists.txt to better understand which variables are usd in where and what they correspond to.
+A lot of variables can be set to redirect paths for puredata, flext and python, according to your environment. It is suggested to have a look at the CMakeLists.txt to better understand which variables are used where and what they correspond to.
 
 To build with cmake, run the following commands, replacing the paths and values according to your current environment:
 mkdir cmake-build
