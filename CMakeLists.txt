@@ -59,7 +59,7 @@ add_library(objects OBJECT
     source/pysymbol.cpp
     source/register.cpp)
 
-target_compile_options(objects PRIVATE -DPD -DUNIX -O3 -Wl,--trace -fPIC -fcheck-new -DFLEXT_INLINE -DFLEXT_ATTRIBUTES=1 -Wall -Wextra -Wshadow -Winline -Wstrict-aliasing -ffast-math -funroll-loops -fomit-frame-pointer -march=core2 -mfpmath=sse -msse -msse2 -msse3)
+target_compile_options(objects PRIVATE -DPD -DUNIX -O3 -Wl,--trace -fPIC -fcheck-new -DFLEXT_SHARED -DFLEXT_INLINE -DFLEXT_ATTRIBUTES=1 -Wall -Wextra -Wshadow -Winline -Wstrict-aliasing -ffast-math -funroll-loops -fomit-frame-pointer -march=core2 -mfpmath=sse -msse -msse2 -msse3)
 
 target_include_directories(objects PRIVATE
     ${PD_SOURCE_PATH}
@@ -75,11 +75,14 @@ add_library(py SHARED $<TARGET_OBJECTS:objects>)
 
 target_compile_options(py PRIVATE -rdynamic -shared -fPIC -Wl,-rpath,"\$ORIGIN",--enable-new-dtags)
 
+target_link_directories(py PRIVATE /usr/local/lib)
+
 target_link_libraries(py
     PRIVATE -lc 
     PRIVATE -lm 
     PRIVATE -lstdc++
-    PRIVATE -lpython${PYTHON_VERSION})
+    PRIVATE -lpython${PYTHON_VERSION}
+    PRIVATE -lflext-pd)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 
