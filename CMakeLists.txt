@@ -89,6 +89,7 @@ add_library(${PROJECT_NAME} SHARED $<TARGET_OBJECTS:objects>)
 target_compile_options(${PROJECT_NAME} PRIVATE -rdynamic -shared -fPIC -Wl,-rpath,"\$ORIGIN",--enable-new-dtags)
 
 target_link_directories(${PROJECT_NAME} PRIVATE /usr/local/lib)
+target_link_directories(${PROJECT_NAME} PRIVATE ${PYTHON_SHARED_LIB_PATH})
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE -lc 
@@ -106,14 +107,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pd_linux")
 
 # stripping file to make it lighter 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-COMMAND strip --strip-unneeded cmake-build/${PROJECT_NAME}.pd_linux
+COMMAND strip --strip-unneeded ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pd_linux
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Stripping file..."
 )
 
 # copying file to Pd externals directory
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-COMMAND mkdir -p ${PATH_TO_PD_EXTERNALS}/${PROJECT_NAME} && cp cmake-build/${PROJECT_NAME}.pd_linux ${PATH_TO_PD_EXTERNALS}/${PROJECT_NAME}
+COMMAND mkdir -p ${PATH_TO_PD_EXTERNALS}/${PROJECT_NAME} && cp ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pd_linux ${PATH_TO_PD_EXTERNALS}/${PROJECT_NAME}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Copying file to Pd externals directory..."
 )
