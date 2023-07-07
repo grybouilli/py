@@ -34,6 +34,11 @@ if(NOT PYTHON_VERSION)
     set(PYTHON_VERSION 3.10)
 endif()
 
+# flext build
+if(NOT FLEXT_BUILD_TYPE)
+    set(FLEXT_BUILD_TYPE SINGLE)
+endif()
+
 include(CMakePrintHelpers)
 cmake_print_variables(PYTHON_SOURCE_PATH)
 set(CMAKE_INSTALL_RPATH ${PYTHON_SHARED_LIB_PATH})
@@ -59,7 +64,15 @@ add_library(objects OBJECT
     source/pysymbol.cpp
     source/register.cpp)
 
-target_compile_options(objects PRIVATE -DPD -DUNIX -O3 -Wl,--trace -fPIC -fcheck-new -DFLEXT_SHARED -DFLEXT_INLINE -DFLEXT_ATTRIBUTES=1 -Wall -Wextra -Wshadow -Winline -Wstrict-aliasing -ffast-math -funroll-loops -fomit-frame-pointer -march=core2 -mfpmath=sse -msse -msse2 -msse3)
+target_compile_options(objects PRIVATE -DPD -DUNIX -O3 -Wl,--trace -fPIC -fcheck-new -DFLEXT_INLINE -DFLEXT_ATTRIBUTES=1 -Wall -Wextra -Wshadow -Winline -Wstrict-aliasing -ffast-math -funroll-loops -fomit-frame-pointer -march=core2 -mfpmath=sse -msse -msse2 -msse3)
+
+# add flext flag depending on chosen build type
+if(FLEXT_BUILD_TYPE STREQUAL MULTI)
+    message("setting threads")
+    target_compile_options(objects PRIVATE -DFLEXT_THREADS)
+elseif(FLEXT_BUILD_TYPE STREQUAL SHARED) 
+    target_compile_options(objects PRIVATE -DFLEXT_SHARED)
+endif()
 
 target_include_directories(objects PRIVATE
     ${PD_SOURCE_PATH}
@@ -71,18 +84,21 @@ target_link_libraries(objects PRIVATE -lpython${PYTHON_VERSION})
 # ---------------------------------------------- #
 # BUILDING PD EXTERNAL PY/PYEXT
 
-add_library(py SHARED $<TARGET_OBJECTS:objects>)
+add_library(${PROJECT_NAME} SHARED $<TARGET_OBJECTS:objects>)
 
-target_compile_options(py PRIVATE -rdynamic -shared -fPIC -Wl,-rpath,"\$ORIGIN",--enable-new-dtags)
+target_compile_options(${PROJECT_NAME} PRIVATE -rdynamic -shared -fPIC -Wl,-rpath,"\$ORIGIN",--enable-new-dtags)
 
-target_link_directories(py PRIVATE /usr/local/lib)
+target_link_directories(${PROJECT_NAME} PRIVATE /usr/local/lib)
 
-target_link_libraries(py
+target_link_libraries(${PROJECT_NAME}
     PRIVATE -lc 
     PRIVATE -lm 
     PRIVATE -lstdc++
-    PRIVATE -lpython${PYTHON_VERSION}
-    PRIVATE -lflext-pd)
+    PRIVATE -lpython${PYTHON_VERSION})
+
+if(FLEXT_BUILD_TYPE STREQUAL SHARED) 
+    target_compile_options(${PROJECT_NAME} PRIVATE lflext-pd)
+endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 
