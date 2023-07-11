@@ -171,6 +171,10 @@ void pybase::lib_setup()
     post("Built with multithreaded flext");
     #endif
 
+    #ifdef PY_USE_GIL
+    post("Using Python GIL");
+    #endif
+
 #ifdef FLEXT_DEBUG
     post("");
     post("DEBUG version compiled on %s %s",__DATE__,__TIME__);
@@ -265,13 +269,9 @@ void pybase::lib_setup()
 #endif
     // -------------------------------------------------------------
 
-    fprintf(stderr, "lib_setup 9\n");
     FLEXT_SETUP(pyobj);
-    fprintf(stderr, "lib_setup 10\n");
     FLEXT_SETUP(pymeth);
-    fprintf(stderr, "lib_setup 11\n");
     FLEXT_SETUP(pyext);
-    fprintf(stderr, "lib_setup 12\n");
 #ifndef PY_NODSP
     FLEXT_DSP_SETUP(pydsp);
 #endif
