@@ -13,6 +13,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     #include <numpy/arrayobject.h>
     #define PY_ARRAYS defined(NUMPY_CORE_INCLUDE_NUMPY_ARRAYOBJECT_H_)
     #define PY_NUMPY PY_ARRAYS
+    #pragma message("Including numpy::arrayobject")
 #else
     #if defined(PY_NUMERIC) || defined(PY_NUMPY) || defined(PY_NUMARRAY)
         #define PY_ARRAYS 1
@@ -47,8 +48,13 @@ inline bool arrsupport() { return numtype != tAny; }
 #       endif
 #   endif
 
+#if NPY_ABI_VERSION >= 0x02000000
+    static NPY_TYPES numtype = NPY_NOTYPE;
+    inline bool arrsupport() { return numtype != NPY_NOTYPE; }
+#else
     static PyArray_TYPES numtype = PyArray_NOTYPE;
     inline bool arrsupport() { return numtype != PyArray_NOTYPE; }
+#endif
 #endif
 #endif
 
@@ -1111,7 +1117,11 @@ void initsamplebuffer()
 #ifdef PY_NUMARRAY
         numtype = sizeof(t_sample) == 4?tFloat32:tFloat64;
 #else
-        numtype = sizeof(t_sample) == 4?PyArray_FLOAT:PyArray_DOUBLE;
+#   if NPY_ABI_VERSION >= 0x02000000
+        numtype = sizeof(t_sample) == 4? NPY_FLOAT:NPY_DOUBLE;
+#   else
+        numtype = sizeof(t_sample) == 4? PyArray_FLOAT:NPY_DOUBLE;
+#   endif
 #endif
         post("");
         post("Python array support enabled");

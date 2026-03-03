@@ -346,7 +346,7 @@ bool pyext::InitInOut(int &inl,int &outl)
         PyObject *res = PyObject_GetAttrString(pyobj,"_inlets"); // get ref
         if(res) {
             if(PyCallable_Check(res)) {
-                PyObject *fres = PyEval_CallObject(res,NULL);
+                PyObject *fres = PyObject_CallObject(res,NULL);
                 Py_DECREF(res);
                 res = fres;
             }
@@ -370,7 +370,7 @@ bool pyext::InitInOut(int &inl,int &outl)
         PyObject *res = PyObject_GetAttrString(pyobj,"_outlets"); // get ref
         if(res) {
             if(PyCallable_Check(res)) {
-                PyObject *fres = PyEval_CallObject(res,NULL);
+                PyObject *fres = PyObject_CallObject(res,NULL);
                 Py_DECREF(res);
                 res = fres;
             }

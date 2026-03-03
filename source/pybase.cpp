@@ -280,8 +280,12 @@ void pybase::lib_setup()
 
 #ifdef FLEXT_THREADS
     // release global lock
-    PyEval_ReleaseLock();
 
+#if (PY_MAJOR_VERSION == 3) and (PY_MINOR_VERSION >= 12)
+    PyEval_ReleaseThread(PyThreadState_Get());
+#else
+    PyEval_ReleaseLock();
+#endif
     // launch thread worker
     LaunchThread(quworker,NULL);
 
